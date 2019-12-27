@@ -1,5 +1,5 @@
 # KungFu Chat
-[<img src="https://i.imgur.com/O3t1yab.png" align="middle" width="3000"/>](https://streamable.com/8q355)
+[<img src="https://i.imgur.com/O3t1yab.png" align="middle" width="3000"/>](https://www.youtube.com/watch?v=HEqCgFU4ep0)
 <img src="https://i.imgur.com/WF0r768.png" align="middle" width="3000"/>
 
 ## Overview
