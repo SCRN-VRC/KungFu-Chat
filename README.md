@@ -20,11 +20,17 @@ Originially, I had everything inside a single CRT with the depth sorting done by
 2. Install the VRCSDK
 3. Import the KungFu Chat Unity package
 4. Either open the Scene or place down the prefab in the Editor
+
 <img src="https://i.imgur.com/MYQ30H1.png" align="middle" />
+
 5. Setup the VRC Layers
+
 <img src="https://i.imgur.com/lsd8IgG.png" align="middle" />
+
 6. Put the **KungFu Layers** GameOject in the Default layer, but I recommend making a specific layer just for the game
+
 <img src="https://i.imgur.com/dAcpVMK.png" align="middle" />
+
 7. Make sure the **Culling Mask** of the **KungFu Layers Camera** is in the same layer
 
 Thanks to [Merlin](https://github.com/Merlin-san/), [Scruffy](https://github.com/ScruffyRules/), [Xiexe](https://github.com/Xiexe/), and 1001 for helping.
