@@ -4,11 +4,11 @@
 
 ## Overview
 Shader based arcade game for VRChat
-#### How the Game State Work
+#### How the Game State Works
 <img src="https://i.imgur.com/toiFDH9.png" align="middle" />
 A 8x8 Custom Render Texture (CRT) with a feedback loop governs the interactions between players, zombies, and the boss. It also manages the states such as idle, attack, or knocked down that results from such interactions.
 
-#### How the Game Renderer Work
+#### How the Game Renderer Works
 <img src="https://i.imgur.com/OSWyZZs.png" align="middle" />
 Originially, I had everything inside a single CRT with the depth sorting done by a radix sort. However the performance was poor on the Quest, so I took up Merlin's advice to seperate the sprites into individual quads and composite it with a camera. The Quest performant version is the one setup for in this project.
 
