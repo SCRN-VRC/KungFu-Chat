@@ -3,15 +3,14 @@
 	Properties
 	{
         _StateTex ("State Input", 2D) = "black" {}
-        _ZombTex ("Sprite Texture", 2D) = "black" {}
-        [HideInInspector]_MinDepth ("Minimum Depth Offset", Range(0., 1.)) = 0.01
-        [HideInInspector]_MaxDepth ("Maximum Depth Offset", Range(0., 1.)) = 0.02
+        _ZombTex ("Zombie Texture", 2D) = "black" {}
         _Resolution ("Output Res", Vector) = (180., 180., 0., 0.)
+        _DepthScale ("Depth Sorting Scale", Float) = 0.1
         _Dst ("Distance Disable", Float) = 0.1
     }
     SubShader
     {
-        Tags { "Queue"="Overlay" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
+        Tags { "Queue"="Geometry" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
         Cull Off
 
         Pass
@@ -57,8 +56,7 @@
             Texture2D<float4> _StateTex;
             Texture2D<float4> _ZombTex;
             float2 _Resolution;
-            float _MinDepth;
-            float _MaxDepth;
+            float _DepthScale;
             float _Dst;
 
             float4 drawZombie(float4 posFragCoord, float4 typeFrameFlipState) {
@@ -148,7 +146,7 @@
                 fragOut o;
                 o.col = 0..xxxx;
                 o.depth = 0.;
-                
+
                 // Render queue in array
                 renderObjStruct renderObj;
 
@@ -161,17 +159,16 @@
                     int2(unity_InstanceID, txZombiesAnimHistFrame.y));
                 renderObj.charAnimHistFrame.x;
 
-                // Depth is flipped on the Quest
-                #if !(UNITY_REVERSED_Z)
-                _MaxDepth = -_MaxDepth;
-                _MinDepth = -_MinDepth;
-                #endif
-
-                float zombDepth = lerp(_MinDepth, _MaxDepth,
+                // Background at 0.1, zombies must be above 0.1
+                float zombDepth = lerp(0.2, 0.5,
                     (UPPER_Y - renderObj.posDirHP.y) / UPPER_Y);
                 draw(o.col, fragCoord, renderObj, o.depth, zombDepth);
-                o.depth += i.uv.w;
-                
+
+                #if !(UNITY_REVERSED_Z)
+                o.depth = 1. - o.depth;
+                #endif
+                // Start at mesh depth
+                o.depth = o.depth * _DepthScale + i.uv.w;
                 return o;
             }
             ENDCG

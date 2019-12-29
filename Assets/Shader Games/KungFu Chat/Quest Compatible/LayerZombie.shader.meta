@@ -2,7 +2,9 @@ fileFormatVersion: 2
 guid: 34f9cb499a29b564d9929dcb9f71d9eb
 ShaderImporter:
   externalObjects: {}
-  defaultTextures: []
+  defaultTextures:
+  - _StateTex: {fileID: 8600000, guid: 9f1e47967d2f3d348a680a57801b946a, type: 2}
+  - _ZombTex: {fileID: 2800000, guid: 4c2b05d3d0e186a46a40d46e9161a84a, type: 3}
   userData: 
   assetBundleName: 
   assetBundleVariant: 

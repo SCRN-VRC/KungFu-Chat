@@ -1,20 +1,19 @@
 ﻿Shader "Games/KungFu Boss"
 {
-	Properties
-	{
+    Properties
+    {
         _StateTex ("State Input", 2D) = "black" {}
         _BGTex ("Background Image", 2D) = "black" {}
-        _BossTex ("Sprite Texture", 2D) = "black" {}
+        _BossTex ("Boss Texture", 2D) = "black" {}
         _UITex ("Menu Texture", 2D) = "black" {}
-        _CharTex ("Sprite Texture", 2D) = "black" {}
-        [HideInInspector]_MinDepth ("Minimum Depth Offset", Range(0., 1.)) = 0.0009
-        [HideInInspector]_MaxDepth ("Maximum Depth Offset", Range(0., 1.)) = 0.031
+        _CharTex ("Character Texture", 2D) = "black" {}
         _Resolution ("Output Res", Vector) = (180., 180., 0., 0.)
+        _DepthScale ("Depth Sorting Scale", Float) = 0.1
         _Dst ("Distance Disable", Float) = 0.1
     }
     SubShader
     {
-        Tags { "Queue"="Overlay" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
+        Tags { "Queue"="Geometry" "ForceNoShadowCasting"="True" "IgnoreProjector"="True" }
         Cull Off
 
         Pass
@@ -33,27 +32,19 @@
             #define bossCol1 float3(0.1, 1.0, 0.1)
             #define bossCol2 float3(0.1, 0.5, 0.1)
 
-            // Depth is flipped on the Quest
-            #if !(UNITY_REVERSED_Z)
-            #define LAYER_UI -0.01
-            #define LAYER_CURSOR -0.02
-            #else
-            #define LAYER_UI 0.01
-            #define LAYER_CURSOR 0.02
-            #endif
-
             struct appdata
             {
                 float4 vertex : POSITION;
                 float4 uv : TEXCOORD0;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
             {
                 float4 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
-
 
             struct renderObjStruct
             {
@@ -75,19 +66,18 @@
             sampler2D _BGTex;
             float4 _BGTex_TexelSize;
             float2 _Resolution;
-            float _MinDepth;
-            float _MaxDepth;
+            float _DepthScale;
             float _Dst;
 
             float sdSquare(in float2 p, in float2 pos, in float2 size) {
                 float2 d = abs(p - pos) - size;
-                return length(max(d, 0.0));
+                return length(max(d,0.0));
             }
 
             float4 RenderBar(float2 pos, float4 barPosSize, float4 col,
                 float3 barCol1, float3 barCol2, inout float depth) {
                 float t = sdSquare(pos, barPosSize.xy, barPosSize.zw);
-                depth = lerp(depth, _MaxDepth + LAYER_UI, 1 - saturate(t));
+                depth = lerp(depth, 0.6, 1 - saturate(t));
                 return float4(lerp(lerp(barCol2, barCol1, (5 + barPosSize.x - pos.x) * 0.05), 
                     col.rgb, smoothstep(0., 0.5, t)), col.a + 1. - saturate(t));
             }
@@ -186,7 +176,6 @@
             v2f vert (appdata v)
             {
                 v2f o;
-
                 // Screenspace
                 o.vertex = float4(v.uv.xy * 2 - 1, 0, 1);
                 #ifdef UNITY_UV_STARTS_AT_TOP
@@ -199,14 +188,8 @@
                     mul(unity_ObjectToWorld, float4(0,0,0,1)).xyz) > _Dst) ? -1 : 1;
                 
                 float4 clipPos = UnityObjectToClipPos(v.vertex);
-                
                 // Quad depth
                 o.uv.w = clipPos.z / clipPos.w;
-
-                //return o;
-
-                // o.vertex = UnityObjectToClipPos(v.vertex);
-                // o.uv = v.uv;
                 return o;
             }
 
@@ -221,14 +204,6 @@
                 state.zw *= 6.;
 
                 fragOut o;
-                o.depth = 0.;
-                o.col = 0..xxxx;
-
-                // Depth is flipped on the Quest
-                #if !(UNITY_REVERSED_Z)
-                _MaxDepth = -_MaxDepth;
-                _MinDepth = -_MinDepth;
-                #endif
 
                 if (floor(state.x) == 0.) {
 
@@ -243,43 +218,43 @@
                         charSelect.y > -1. ? charSelect.y : -1.;
 
                     o.col = _UITex.Load(int3(fragCoord.x + 332, fragCoord.y, 0));
-                    float depth = _MaxDepth;
+                    float depth = 0.71;
 
                     if (selection.x > -1.) {
                         float4 pose = charPose(_CharTex, uint4(0..xx, charA[selection.x]),
                             (fragCoord + float2(10., 50.)) * 1.5);
                         o.col = lerp(o.col, pose, pose.a);
-                        depth = lerp(depth, _MaxDepth, pose.a);
+                        depth = lerp(depth, 0.71, pose.a);
                     }
 
                     if (selection.y > -1.) {
                         float4 pose = charPose(_CharTex, uint4(0..xx, charA[selection.y]),
                             (fragCoord + float2(-110., 50.)) * 1.5);
                         o.col = lerp(o.col, pose, pose.a);
-                        depth = lerp(depth, _MaxDepth, pose.a);
+                        depth = lerp(depth, 0.71, pose.a);
                     }
 
                     float4 btns = _UITex.Load(int3(fragCoord.x + 152, fragCoord.y, 0));
                     o.col = lerp(o.col, btns, btns.a);
-                    depth = lerp(depth, _MaxDepth, btns.a);
+                    depth = lerp(depth, 0.71, btns.a);
 
                     if (selection.x > -1.) {
                         float b0 = sdRoundedBox(fragCoord, charBtnArr[selection.x], 8..xx, 10.);
                         o.col = lerp(float4(0., 1..xxx), o.col, smoothstep(0.5, 3.0, abs(b0)));
-                        depth = lerp(depth, _MaxDepth, b0);
+                        depth = lerp(depth, 0.71, b0);
                     }
 
                     if (selection.y > -1.) {
                         float b1 = sdRoundedBox(fragCoord, charBtnArr[selection.y], 8..xx, 10.);
                         o.col = lerp(float4(1..xx, 0., 1.), o.col, smoothstep(0.5, 3.0, abs(b1)));
-                        depth = lerp(depth, _MaxDepth, b1);
+                        depth = lerp(depth, 0.71, b1);
                     }
 
                     float4 p1Cursor = cursor1(_UITex, floor(pointers.xy), fragCoord + float2(30, 20));
                     float4 p2Cursor = cursor2(_UITex, floor(pointers.zw), fragCoord + float2(30, 20));
                     o.col = lerp(o.col, p1Cursor, p1Cursor.a);
                     o.col = lerp(o.col, p2Cursor, p2Cursor.a);
-                    depth = lerp(depth, _MaxDepth + LAYER_CURSOR, saturate(p1Cursor.a + p2Cursor.a));
+                    depth = lerp(depth, 0.72, saturate(p1Cursor.a + p2Cursor.a));
                     o.depth = depth;
                 }
                 // Actual Game
@@ -288,7 +263,7 @@
                     bgUV.y -= fmod(floor(state.z), 8) * 0.125;
                     bgUV.x += stagePosZContIndex.x / _Resolution.x * 0.5;
                     o.col = float4(tex2D(_BGTex, bgUV).rgb, 1.0);
-                    o.depth = _MinDepth;
+                    o.depth = 0.1;
 
                     renderObjStruct renderObj1;
 
@@ -306,12 +281,12 @@
                     renderObj2.charAnimHistFrame = float4(0..xxx, floor(fmod(_Time.w * 2., 3.)));
 
                     if (!renderObj1.skip) {
-                        float bossDepth = lerp(_MinDepth, _MaxDepth,
+                        float bossDepth = lerp(0.5, 0.6,
                             (UPPER_Y - renderObj1.posDirHP.y) / UPPER_Y);
                         draw1(o.col, fragCoord, renderObj1, o.depth, bossDepth);
                     }
                     if (!renderObj2.skip) {
-                        float rasDepth = lerp(_MinDepth, _MaxDepth,
+                        float rasDepth = lerp(0.5, 0.6,
                             (UPPER_Y - renderObj2.posDirHP.y) / UPPER_Y);
                         draw2(o.col, fragCoord, renderObj2, o.depth, rasDepth);
                     }
@@ -345,7 +320,7 @@
                         float4 sm = specialMove(_CharTex, int4(-55 + anim.x, -15 + anim.y,
                             charA[char1HP.y]), fragCoord);
                         o.col = lerp(o.col, sm, sm.a);
-                        o.depth = lerp(o.depth, _MaxDepth + LAYER_CURSOR, sm.a);
+                        o.depth = lerp(o.depth, 0.6, sm.a);
 
                     }
                     if (char2HP.z == _SPECIAL) {
@@ -356,7 +331,7 @@
                         float4 sm = specialMove(_CharTex, int4(-55 + anim.x, -15 + anim.y,
                             charA[char2HP.y]), fragCoord);
                         o.col = lerp(o.col, sm, sm.a);
-                        o.depth = lerp(o.depth, _MaxDepth + LAYER_CURSOR, sm.a);
+                        o.depth = lerp(o.depth, 0.6, sm.a);
                     }
 
                     float blink = step(0, sin(_Time.y * 8));
@@ -372,7 +347,7 @@
                     UI += hpUI(_UITex, uint2(0, 143), fragCoord);
 
                     o.col = lerp(o.col, UI, UI.a);
-                    o.depth = lerp(o.depth, _MaxDepth + LAYER_UI, UI.a);
+                    o.depth = lerp(o.depth, 0.7, UI.a);
 
                     score.zw *= 0.01;
                     o.col = RenderBar(fragCoord, float4(8. + 39.5 * score.z, 9., 39.5 * score.z, 3.), o.col,
@@ -386,12 +361,12 @@
                     UI += float4(zombCount.xx, 0., zombCount);
 
                     o.col = lerp(o.col, UI, UI.a);
-                    o.depth = lerp(o.depth, _MaxDepth + LAYER_UI, UI.a);
+                    o.depth = lerp(o.depth, 0.7, UI.a);
 
                     if (stagePosZContIndex.z == _CONTINUE) {
                         float4 go = goForward(_UITex, uint2(130, 70), fragCoord);
                         o.col = lerp(o.col, go, blink * go.a);
-                        o.depth = lerp(o.depth, _MaxDepth + LAYER_UI, blink * go.a);
+                        o.depth = lerp(o.depth, 0.7, blink * go.a);
                     }
 
                     if (stagePosZContIndex.z == _CUTSCENE1) {
@@ -414,7 +389,7 @@
                             o.col = lerp(o.col, playerText, playerText.a *
                                 step(18., stagePosZContIndex.w));
                         }
-                        o.depth = _MaxDepth + LAYER_CURSOR;
+                        o.depth = 0.7;
                     }
                     else if (stagePosZContIndex.z == _CREDITS) {
                         o.col *= 1. - min(stagePosZContIndex.w, 1.);
@@ -422,10 +397,15 @@
                         creditCol += PrintInt((i.uv + float2(-0.26, -0.32)) * 10.0,
                             floor(min(score.y + score.x, 99999)), 5);
                         o.col += creditCol * min(stagePosZContIndex.w, 1.);
-                        o.depth = _MaxDepth + LAYER_CURSOR;
+                        o.depth = 0.7;
                     }
                 }
-                o.depth += i.uv.w;
+
+                #if !(UNITY_REVERSED_Z)
+                o.depth = 1. - o.depth;
+                #endif
+                // Start at mesh depth
+                o.depth = o.depth * _DepthScale + i.uv.w;
                 return o;
             }
             ENDCG
