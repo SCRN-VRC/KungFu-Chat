@@ -33,4 +33,12 @@ Originially, I had everything inside a single CRT with the depth sorting done by
 
 7. Make sure the **Culling Mask** of the **KungFu Layers Camera** is in the same layer
 
+#### Building for the Quest
+
+1. Follow the same steps as above and [convert to the Android build](https://docs.vrchat.com/docs/creating-content-for-the-oculus-quest)
+
+<img src="https://i.imgur.com/sE3WHLG.png" align="middle" />
+
+2. Set the **Max Size** for **scrn-spritesheet.png** located in **Assets > Shader Games > KungFu Chat > Textures** to **4096**
+
 Thanks to [Merlin](https://github.com/Merlin-san/), [Scruffy](https://github.com/ScruffyRules/), [Xiexe](https://github.com/Xiexe/), and 1001 for helping.
