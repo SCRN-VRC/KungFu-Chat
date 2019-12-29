@@ -14,7 +14,7 @@ Shader "Custom/CRT Screen"
         _Aberration ("Chromatic Aberration Offset", Range(0.0, 0.1)) = 0.003
         _DistScale ("Distance Scale", Range(0.0, 1.0)) = 0.03
         _RefProbeMix("Reflection Probe", Range(0.0, 1.0)) = 0.5
-        _Dim ("Dim", Range(0.0, 1.0)) = 0.7
+        _Dim ("Dim", Range(0.0, 1.0)) = 0.85
         _Res ("Scanline Res", Vector) = (200, 200, 0, 0)
     }
 

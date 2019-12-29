@@ -220,8 +220,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   launchedFromSDKPipeline: 0
-  completedSDKPipeline: 0
-  blueprintId: wrld_d3c38a7b-4811-4584-bd14-027cb45bc96b
+  completedSDKPipeline: 1
+  blueprintId: wrld_42e59754-a6ed-43d7-8135-add5d5b75250
   contentType: 1
   assetBundleUnityVersion: 
 --- !u!114 &1009069087
@@ -262,13 +262,13 @@ MonoBehaviour:
   DynamicPrefabs: []
   DynamicMaterials:
   - {fileID: 2100000, guid: de9fa52ee37a54b4fa97f0686a2f3ed5, type: 2}
-  - {fileID: 2100000, guid: d22d52f34506dcd4db583ce27e860d2f, type: 2}
-  - {fileID: 2100000, guid: f7b39862a383cec499bb1382e20752eb, type: 2}
   - {fileID: 2100000, guid: 5aa95b3fa56e28f43a84e301c3d19e08, type: 2}
-  - {fileID: 2100000, guid: 35ef15f5349bd4745894e04dec376f8e, type: 2}
-  - {fileID: 2100000, guid: 7257aacd373272b408ac9a9cccd9f13a, type: 2}
-  - {fileID: 2100000, guid: 6d5d620871e48424c851ca5eac99a4ea, type: 2}
+  - {fileID: 2100000, guid: d22d52f34506dcd4db583ce27e860d2f, type: 2}
   - {fileID: 2100000, guid: 76f66b70ef9451a47935f20d5a92301c, type: 2}
+  - {fileID: 2100000, guid: 6d5d620871e48424c851ca5eac99a4ea, type: 2}
+  - {fileID: 2100000, guid: 7257aacd373272b408ac9a9cccd9f13a, type: 2}
+  - {fileID: 2100000, guid: 35ef15f5349bd4745894e04dec376f8e, type: 2}
+  - {fileID: 2100000, guid: f7b39862a383cec499bb1382e20752eb, type: 2}
   UpdateTimeInMS: 66
   LightMapsNear: []
   LightMapsFar: []
@@ -328,7 +328,7 @@ Light:
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: 0
     m_CustomResolution: -1
     m_Strength: 1
