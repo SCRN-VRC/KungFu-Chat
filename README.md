@@ -37,9 +37,10 @@ Originially, I had everything inside a single CRT with the depth sorting done by
 
 1. Follow the same steps as above and [convert to the Android build](https://docs.vrchat.com/docs/creating-content-for-the-oculus-quest)
 
-<img src="https://i.imgur.com/sE3WHLG.png" align="middle" />
+<img src="https://i.imgur.com/OMQIpWV.png" align="middle" />
 
-2. Set the **Max Size** for **scrn-spritesheet.png** located in **Assets > Shader Games > KungFu Chat > Textures** to **4096**
-3. Set the resolution of **KungFu Quest.renderTexture** located in **Assets > Shader Games > KungFu Chat > Quest Compatible** to **128x128**
+2. Set the **Max Size** for **char-sprites.png, boss-sprites.png, zombie-sprites and UI.png** located in **Assets > Shader Games > KungFu Chat > Textures** to **4096**
+3. Set the **Format** of the same files to **RGBA Compressed ASTC 6x6**
+4. Set the resolution of **KungFu Quest.renderTexture** located in **Assets > Shader Games > KungFu Chat > Quest Compatible** to **128x128**
 
 Thanks to [Merlin](https://github.com/Merlin-san/), [Scruffy](https://github.com/ScruffyRules/), [Xiexe](https://github.com/Xiexe/), and 1001 for helping.
